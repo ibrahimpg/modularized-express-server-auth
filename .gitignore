@@ -59,3 +59,7 @@ typings/
 
 # next.js build output
 .next
+
+# public and private key
+public.key
+private.key
