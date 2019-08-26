@@ -1,3 +1,6 @@
+/* eslint-disable no-underscore-dangle */
+const nodemailer = require('nodemailer');
+
 const database = require('../index');
 
 module.exports = (req, res) => {
@@ -6,10 +9,24 @@ module.exports = (req, res) => {
   })
     .then((user) => {
       if (user !== null) {
-        // send user._id based verification link to user.email with nodemailer
-        .then(() => res.sendStatus(201));
+        return nodemailer.createTransport({
+          host: 'nanoca.sh', port: 465, secure: true, auth: { user: 'tester@nanoca.sh', pass: process.env.MAIL_PASSWORD },
+        }).sendMail({
+          from: '"Tester" <tester@nanoca.sh>',
+          to: user.email,
+          subject: 'Verify your email',
+          html: `
+            Please click on the link below in order to verify your email.
+            ---    
+            http://localhost:8888/verify/${user.username}/${user._id}
+            `,
+        })
+          .then(() => res.sendStatus(201))
+          .catch(err => console.log(err));
       }
       return res.sendStatus(400);
     })
     .catch(() => res.sendStatus(500));
 };
+
+// if the error in the catch statement would include finding null... if/else can be removed

@@ -21,27 +21,23 @@ module.exports = (req, res) => {
           _id: randomString, // send w/ nodemailer to reg. email, can be used in verification string
           verified: false, // if verificationString = _id, set verified to true
         })
-          .then(() => {
-            nodemailer.createTransport({
-              host: process.env.EMAIL_HOST,
-              port: 26,
-              secure: false,
-              tls: { rejectUnauthorized: false },
-              pool: true,
-              auth: { user: process.env.EMAIL_ADDRESS, pass: process.env.EMAIL_PASSWORD },
-            }).sendMail({
-              from: process.env.EMAIL_ADDRESS,
-              to: req.body.email,
-              subject: 'Automatic reply from Ibrahim P.G.',
-              html: `
-        ${req.body.name},
-        Please click on the link below in order to verify your email.
-        ---    
-        ${process.env.SERVER_URL}/user/verify/${randomString}
-        `,
-            });
-          })
-          .then(() => res.sendStatus(201));
+          .then(() => nodemailer.createTransport({
+            host: 'nanoca.sh',
+            port: 465,
+            secure: true,
+            auth: { user: 'tester@nanoca.sh', pass: process.env.MAIL_PASSWORD },
+          }).sendMail({
+            from: '"Tester" <tester@nanoca.sh>',
+            to: req.body.email,
+            subject: 'Automatic reply from Ibrahim P.G.',
+            html: `
+                Please click on the link below in order to verify your email.
+                ---    
+                http://localhost:8888/verify/${req.body.username}/${randomString}
+                `,
+          }))
+          .then(() => res.sendStatus(201))
+          .catch(err => console.log(err));
       }
       return res.sendStatus(400);
     })

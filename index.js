@@ -19,12 +19,12 @@ exports.db = () => db;
 
 // Route Logic
 
-const loginUser = require('./controllers/loginUser');
+// const loginUser = require('./controllers/loginUser');
 const registerUser = require('./controllers/registerUser');
-const deleteUser = require('./controllers/deleteUser');
+// const deleteUser = require('./controllers/deleteUser');
 const verifyEmail = require('./controllers/verifyEmail');
 const resendEmail = require('./controllers/resendEmail');
-const verifyToken = require('./controllers/verifyToken');
+// const verifyToken = require('./controllers/verifyToken');
 
 // The API Structure
 
@@ -37,11 +37,13 @@ app.use((req, res, next) => {
   next();
 });
 
-app.post('/login', loginUser);
+// app.post('/login', loginUser);
 app.post('/register', registerUser);
-app.post('/delete', verifyToken, deleteUser);
-app.post('/verify', verifyEmail);
+// app.post('/delete', verifyToken, deleteUser);
+app.get('/verify/:username/:randomId', verifyEmail);
 app.post('/resend', resendEmail);
+
+// the resend route can be recycled to create the reset password route
 
 // this error handling below needs testing. it doesn't seem to actually be useful.
 
